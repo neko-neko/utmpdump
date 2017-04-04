@@ -28,7 +28,7 @@ type GoUtmp struct {
 }
 
 // Convert Utmp to GoUtmp
-func ToGoUtmp(u *Utmp) *GoUtmp {
+func NewGoUtmp(u *Utmp) *GoUtmp {
 	return &GoUtmp{
 		Type:   int(u.Type),
 		Pid:    int(u.Pid),

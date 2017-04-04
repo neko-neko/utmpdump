@@ -67,12 +67,16 @@ func main() {
 	// to go utmp
 	var goUtmps []*utmp.GoUtmp
 	for _, gu := range utmps {
-		goUtmps = append(goUtmps, utmp.ToGoUtmp(gu))
+		goUtmps = append(goUtmps, utmp.NewGoUtmp(gu))
 	}
 
 	// filter
-	filter := &filter.TimeFilter{}
-	goUtmps = filter.Filter(goUtmps, sinceTime, untilTime)
+	filters := []filter.Filter{
+		&filter.TimeFilter{Since: sinceTime, Until: untilTime},
+	}
+	for _, filter := range filters {
+		goUtmps = filter.Filter(goUtmps)
+	}
 
 	// print
 	printer := printer.GetPrinter(outputType)

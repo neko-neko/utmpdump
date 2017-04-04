@@ -6,14 +6,17 @@ import (
 	"github.com/neko-neko/utmpdump/utmp"
 )
 
-type TimeFilter struct{}
+type TimeFilter struct {
+	Since time.Time
+	Until time.Time
+}
 
 // filter time
-func (f *TimeFilter) Filter(utmps []*utmp.GoUtmp, since time.Time, until time.Time) []*utmp.GoUtmp {
+func (f *TimeFilter) Filter(utmps []*utmp.GoUtmp) []*utmp.GoUtmp {
 	var (
 		result      = []*utmp.GoUtmp{}
-		sinceIsZero = since.IsZero()
-		untilIsZero = until.IsZero()
+		sinceIsZero = f.Since.IsZero()
+		untilIsZero = f.Until.IsZero()
 	)
 
 	if sinceIsZero && untilIsZero {
@@ -23,7 +26,7 @@ func (f *TimeFilter) Filter(utmps []*utmp.GoUtmp, since time.Time, until time.Ti
 	if !sinceIsZero {
 		for _, u := range utmps {
 			utime, _ := time.Parse(utmp.TimeFormat, u.Time)
-			if !utime.Before(since) {
+			if !utime.Before(f.Since) {
 				result = append(result, u)
 			}
 		}
@@ -32,7 +35,7 @@ func (f *TimeFilter) Filter(utmps []*utmp.GoUtmp, since time.Time, until time.Ti
 	if !untilIsZero {
 		for _, u := range utmps {
 			utime, _ := time.Parse(utmp.TimeFormat, u.Time)
-			if !utime.After(until) {
+			if !utime.After(f.Until) {
 				result = append(result, u)
 			}
 		}
