@@ -2,7 +2,6 @@ package utmp
 
 import (
 	"bytes"
-	"fmt"
 	"time"
 )
 
@@ -42,32 +41,7 @@ func NewGoUtmp(u *Utmp) *GoUtmp {
 		},
 		Session: int(u.Session),
 		Time:    time.Unix(int64(u.Time.Sec), 0).Format(TimeFormat),
-		Addr:    addrToString(u.Addr),
-	}
-}
-
-// Integer ip address to string
-func addrToString(addr [4]int32) string {
-	if addr[1] == 0 && addr[2] == 0 && addr[3] == 0 {
-		return fmt.Sprintf(
-			"%d.%d.%d.%d",
-			addr[0]&0xFF,
-			(addr[0]>>8)&0xFF,
-			(addr[0]>>16)&0xFF,
-			(addr[0]>>24)&0xFF,
-		)
-	} else {
-		return fmt.Sprintf(
-			"%x:%x:%x:%x:%x:%x:%x:%x",
-			addr[0]&0xffff,
-			(addr[0]>>16)&0xffff,
-			addr[1]&0xffff,
-			(addr[1]>>16)&0xffff,
-			addr[2]&0xffff,
-			(addr[2]>>16)&0xffff,
-			addr[3]&0xffff,
-			(addr[3]>>16)&0xffff,
-		)
+		Addr:    u.Addr().String(),
 	}
 }
 
