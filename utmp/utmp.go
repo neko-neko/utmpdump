@@ -1,8 +1,10 @@
 package utmp
 
 import (
+	"bytes"
 	"encoding/binary"
 	"io"
+	"net"
 )
 
 const (
@@ -48,9 +50,21 @@ type Utmp struct {
 	Exit    ExitStatus
 	Session int32
 	Time    TimeVal
-	Addr    [4]int32
+	AddrV6  [16]byte
 	// Reserved member
 	Reserved [20]byte
+}
+
+// Addr returns the IPv4 or IPv6 address of the login record.
+func (r *Utmp) Addr() net.IP {
+	ip := make(net.IP, 16)
+	// no error checking: reading from r.AddrV6 cannot fail
+	binary.Read(bytes.NewReader(r.AddrV6[:]), binary.BigEndian, ip)
+	if bytes.Equal(ip[4:], net.IPv6zero[4:]) {
+		// IPv4 address, shorten the slice so that net.IP behaves correctly:
+		ip = ip[:4]
+	}
+	return ip
 }
 
 // Read utmps
