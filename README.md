@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/neko-neko/utmpdump.svg?style=svg)](https://circleci.com/gh/neko-neko/utmpdump)
+
 # utmpdump
 utmpdump is output utmp format file to json or tsv or csv.  
 
@@ -41,6 +43,9 @@ $ utmpdump -f /var/log/wtmp
 
 ## Credits
 neko-neko
+
+## Contributors
+[stapelberg](https://github.com/stapelberg)
 
 ## License
 MIT
